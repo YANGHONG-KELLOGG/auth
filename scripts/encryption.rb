@@ -4,5 +4,22 @@
 
 # TODO:
 # 1. encrypt a secret and puts encrypted string
+secret = "tacos"
+puts secret
+
+# below is 1 way encription 
+encrpted_string = BCrypt::Password.create(secret)
+puts encrpted_string
 # 2. prepare encrypted string for testing
 # 3. test secret against prepared encrypted string
+
+user_entered_secret = "tacos"
+result = BCrypt::Password.new(encrpted_string) == user_entered_secret
+puts result
+
+user_entered_secret = "puppy"
+result = BCrypt::Password.new(encrpted_string) == user_entered_secret
+puts result
+
+
+

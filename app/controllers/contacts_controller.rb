@@ -3,7 +3,7 @@ class ContactsController < ApplicationController
   def show
     @contact = Contact.find_by({ "id" => params["id"] })
     @company = Company.find_by({ "id" => @contact["company_id"] })
-    @activities = Activity.where({ "contact_id" => @contact["id"] })
+    @activities = Activity.where({ "contact_id" => @contact["id"], "user_id" => session["user_id"] })
     @activity = Activity.new
     @activity["contact_id"] = @contact["id"]
   end
@@ -31,19 +31,28 @@ class ContactsController < ApplicationController
   
   def update
     @contact = Contact.find_by({ "id" => params["id"] })
-    @contact["first_name"] = params["contact"]["first_name"]
-    @contact["last_name"] = params["contact"]["last_name"]
-    @contact["email"] = params["contact"]["email"]
-    @contact["phone_number"] = params["contact"]["phone_number"]
-    @contact["company_id"] = params["contact"]["company_id"]
-    @contact.save
+    if @current_user
+      @contact["first_name"] = params["contact"]["first_name"]
+      @contact["last_name"] = params["contact"]["last_name"]
+      @contact["email"] = params["contact"]["email"]
+      @contact["phone_number"] = params["contact"]["phone_number"]
+      @contact["company_id"] = params["contact"]["company_id"]
+      @contact.save
+    else
+      flash["notice"] = "You must be logged in."
+    end
     redirect_to "/contacts/#{@contact["id"]}"
   end
-
+  
   def destroy
     @contact = Contact.find_by({ "id" => params["id"] })
-    @contact.destroy
-    redirect_to "/companies/#{@contact["company_id"]}"
+    if @current_user
+      @contact.destroy
+      redirect_to "/companies/#{@contact["company_id"]}"
+    else
+      flash["notice"] = "You must be logged in."
+      redirect_to "/contacts/#{@contact["id"]}"
+    end
   end
 
 end

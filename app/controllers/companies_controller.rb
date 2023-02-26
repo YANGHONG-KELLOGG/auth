@@ -28,17 +28,27 @@ class CompaniesController < ApplicationController
   
   def update
     @company = Company.find_by({ "id" => params["id"] })
-    @company["name"] = params["company"]["name"]
-    @company["city"] = params["company"]["city"]
-    @company["state"] = params["company"]["state"]
-    @company.save
+    if @current_user
+      @company["name"] = params["company"]["name"]
+      @company["city"] = params["company"]["city"]
+      @company["state"] = params["company"]["state"]
+      @company.save
+    else
+      flash["notice"] = "You must be logged in."
+    end
     redirect_to "/companies/#{@company["id"]}"
   end
 
+
   def destroy
     @company = Company.find_by({ "id" => params["id"] })
-    @company.destroy
-    redirect_to "/companies"
+    if @current_user
+      @company.destroy
+      redirect_to "/companies"
+    else
+      flash["notice"] = "You must be logged in."
+      redirect_to "/companies/#{@company["id"]}"
+    end
   end
 
 end
