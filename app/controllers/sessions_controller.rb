@@ -19,12 +19,12 @@ class SessionsController < ApplicationController
             
             else
             #otherwise, back to login
-            flash["notice"] = "Nope"
-            redirect_to "/sessions/new"
+            flash["notice"] = "Password not right"
+            redirect_to "/login"
             end
         else
         #otherwise, back to login
-        flash["notice"] = "Nope"
+        flash["notice"] = "No user found"
         redirect_to "/login"
         end 
     end 
